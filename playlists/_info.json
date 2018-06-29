@@ -1,0 +1,19 @@
+{
+  "site_url": "https://adafruit.com",
+  "author": "Adafruit Industries",
+  "managingEditor": "Phillip Torrone",
+  "webMaster": "Brennen Bearnes",
+  "copyright": "2018 Adafruit Industries",
+  "language": "en",
+  "categories": ["Adafruit", "Electronics", "Education"],
+  "ttl": "60",
+  "itunesAuthor": "Adafruit Industries",
+  "itunesOwner": {
+    "name": "Adafruit Industries",
+    "email": "support@adafruit.com"
+  },
+  "itunesExplicit": false,
+  "itunesCategory": {
+    "text": "Education"
+  }
+}
