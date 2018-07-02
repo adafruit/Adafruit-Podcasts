@@ -1,0 +1,8 @@
+media/
+*.egg-info
+_build
+*.pyc
+.env
+build*
+bundles
+__pycache__
