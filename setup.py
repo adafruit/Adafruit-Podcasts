@@ -11,7 +11,6 @@ setup(name='adafruit_podcast',
       install_requires=[
           'dominate',
           'docopt',
-          'subprocess',
           'feedgen'
       ],
       scripts=['bin/podcast'],

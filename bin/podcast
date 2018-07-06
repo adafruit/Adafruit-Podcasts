@@ -13,21 +13,25 @@ Options:
   -v --version       Display version
 """
 
+import sys
 from docopt import docopt
 from adafruit_podcast import adafruit_podcast
-import sys
 
-if __name__ == '__main__':
+def main():
+    """Parse arguments, retrieve videos, and generate feed data."""
+
     args = docopt(__doc__, version='adafruit-podcast 0.0.1')
 
-    p = adafruit_podcast.AdafruitPodcast()
+    podcast = adafruit_podcast.AdafruitPodcast()
 
     if args['--base_url']:
-        p.base_url = args['--base_url']
+        podcast.base_url = args['--base_url']
     if args['--output']:
-        p.output_dir = args['--output']
+        podcast.output_dir = args['--output']
 
-    p.configure()
-    p.run()
+    podcast.configure()
+    podcast.run()
 
     sys.exit()
+
+main()
