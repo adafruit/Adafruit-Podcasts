@@ -136,6 +136,13 @@ class AdafruitPlaylist:
                 self.video_ids.append(vid_data['id'])
                 self.videos.append(vid_data)
 
+    def video_url(self, video_filename):
+        """Get a URL for the given filename."""
+        return self.controller.base_url + \
+            self.output_template_basedir + \
+            '/' + \
+            os.path.basename(video_filename)
+
     def write_rss(self):
         """Write podcast feeds to files."""
 
@@ -173,10 +180,7 @@ class AdafruitPlaylist:
         )
 
         for vid in self.videos:
-            vid_url = self.controller.base_url + \
-                self.output_template_basedir + \
-                '/' + \
-                os.path.basename(vid['_filename'])
+            vid_url = self.video_url(vid['_filename'])
 
             # Size of enclosed file in bytes:
             vid_size = os.path.getsize(vid['_filename'])
@@ -212,19 +216,27 @@ class AdafruitPlaylist:
 
         em = lxml.builder.ElementMaker()
 
-        episodesLockup = lxml.etree.Element('episodesLockup')
+        # Build list of videos:
+        episodesSection = lxml.etree.Element('section')
+        episodesSection.append(em.header(em.title('Episodes')))
+
         for vid in self.videos:
-            episodesLockup.append(em.title(vid['fulltitle']))
-            episodesLockup.append(
-                em.relatedContent(
-                    em.lockup(
-                        em.img(),
-                        em.title(vid['fulltitle']),
-                        em.description(vid['description'])
-                    )
+            vid_url = self.video_url(vid['_filename'])
+            episodesSection.append(
+                em.listItemLockup(
+                    em.title(vid['fulltitle']),
+                    em.relatedContent(
+                        em.lockup(
+                            em.img(),
+                            em.title(vid['fulltitle']),
+                            em.description(vid['description'])
+                        )
+                    ),
+                    {'is': "true", 'videoURL': vid_url}
                 )
             )
 
+        # Build overall TVML document:
         tvml = em.document(
             em.listTemplate(
                 em.banner(
@@ -238,10 +250,7 @@ class AdafruitPlaylist:
                 ),
                 em.list(
                     em.header(em.title(self.info['title'])),
-                    em.section(
-                        em.header(em.title('Episodes')),
-                        episodesLockup
-                    ),
+                    episodesSection
                 )
             ),
         )
