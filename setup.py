@@ -11,7 +11,8 @@ setup(name='adafruit_podcast',
       install_requires=[
           'dominate',
           'docopt',
-          'feedgen'
+          'feedgen',
+          'Jinja2'
       ],
       scripts=['bin/podcast'],
       zip_safe=False)

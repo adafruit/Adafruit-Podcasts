@@ -22,15 +22,23 @@ def main():
 
     args = docopt(__doc__, version='adafruit-podcast 0.0.1')
 
-    podcast = adafruit_podcast.AdafruitPodcast()
+    rss_podcast = adafruit_podcast.AdafruitPodcast()
+    atv_podcast = adafruit_podcast.AdafruitPodcast()
 
     if args['--base_url']:
-        podcast.base_url = args['--base_url']
+        rss_podcast.base_url = args['--base_url']
+        atv_podcast.base_url = args['--base_url']
     if args['--output']:
-        podcast.output_dir = args['--output']
+        rss_podcast.output_dir = args['--output']
+        atv_podcast.output_dir = args['--output']
 
-    podcast.configure()
-    podcast.run()
+    print("Configuring and running for RSS podcast generation.")
+    rss_podcast.configure()
+    rss_podcast.run_all_rss()
+
+    print("Configuring and running for Apple TV.")
+    atv_podcast.configure()
+    atv_podcast.run_all_appletv()
 
     sys.exit()
 

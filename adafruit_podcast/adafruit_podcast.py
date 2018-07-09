@@ -10,6 +10,24 @@ import pprint
 import re
 import subprocess
 from feedgen.feed import FeedGenerator
+from jinja2 import Environment, PackageLoader, select_autoescape
+
+JINJA_ENV = Environment(
+    loader=PackageLoader('adafruit_podcast', 'templates'),
+    autoescape=select_autoescape(['html', 'xml', 'js'])
+)
+
+# YouTube download commands:
+# Note: -s is for simulate, remove to get anything real done, add to avoid downloading videos
+PODCAST_COMMAND = ['youtube-dl', '--ignore-errors', '--print-json',
+                   '--write-thumbnail', '--no-overwrites', '--max-downloads', '1',
+                   '--merge-output-format', 'mp4', '--restrict-filenames',
+                   '--sleep-interval', '10', '--format', '134+140']
+
+APPLETV_COMMAND = ['youtube-dl', '--ignore-errors', '--print-json',
+                   '--write-thumbnail', '--no-overwrites', '--max-downloads', '1',
+                   '--merge-output-format', 'mp4', '--restrict-filenames',
+                   '--sleep-interval', '10', '--format', '137+140,136+140']
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -44,28 +62,22 @@ class AdafruitPodcast:
 
             self.playlists.append(AdafruitPlaylist(self, playlist_desc))
 
-    def run(self):
+    def run_all_rss(self):
         """Fetch playlists, write podcast data."""
         for playlist in self.playlists:
             print(playlist.info['title'])
-            playlist.fetch()
+            playlist.fetch(PODCAST_COMMAND)
             playlist.write_rss()
 
+    def run_all_appletv(self):
+        """Fetch playlists, write podcast data."""
+        for playlist in self.playlists:
+            print(playlist.info['title'])
+            playlist.fetch(APPLETV_COMMAND)
+            playlist.write_appletv()
 
 class AdafruitPlaylist:
     """AdafruitPlayist - model an individual playlist."""
-
-    # YouTube download commands:
-    # XXX: -s is for simulate, remove to get anything real done, add to avoid downloading videos
-    podcast_command = ['youtube-dl', '--ignore-errors', '--print-json',
-                       '--write-thumbnail', '--no-overwrites', '--max-downloads', '1',
-                       '--merge-output-format', 'mp4', '--restrict-filenames',
-                       '--sleep-interval', '10', '--format', '134+140']
-
-    appletv_command = ['youtube-dl', '--ignore-errors', '--print-json',
-                       '--write-thumbnail', '--no-overwrites', '--max-downloads', '1',
-                       '--merge-output-format', 'mp4', '--restrict-filenames',
-                       '--sleep-interval', '10', '--format', '137+140,136+140']
 
     output_template_basedir = 'media'
     output_template_name = '%(id)s_%(height)s.%(ext)s'
@@ -87,7 +99,7 @@ class AdafruitPlaylist:
             self.output_template_name
         )
 
-    def fetch(self):
+    def fetch(self, command):
         """Fetch the playlist's videos and metadata."""
         source = self.url
         # If we have a list of source URLs, turn them into a string:
@@ -95,7 +107,7 @@ class AdafruitPlaylist:
             source = source.join(' ')
 
         result = subprocess.run(
-            self.podcast_command + ["--output", self.output_template(), source],
+            command + ["--output", self.output_template(), source],
             stdout=subprocess.PIPE,
             universal_newlines=True
         )
@@ -190,3 +202,15 @@ class AdafruitPlaylist:
 
         # Generate RSS file in output folder:
         feedgen.rss_file(os.path.join(self.controller.output_dir, self.folder, 'podcast.xml'))
+
+    def write_appletv(self):
+        """Write appletv.js files."""
+
+        # Ensure output folder for this podcast exists:
+        os.makedirs(os.path.join(self.controller.output_dir, self.folder), exist_ok=True)
+
+        js_template = JINJA_ENV.get_template('appletv.js')
+
+        js_template.stream(self.info).dump(
+            os.path.join(self.controller.output_dir, self.folder, 'appletv.js')
+        )
