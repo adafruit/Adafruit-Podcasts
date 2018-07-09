@@ -5,6 +5,8 @@ them, and generate feeds.
 
 import glob
 import json
+import lxml.builder
+import lxml.etree
 import os
 import pprint
 import re
@@ -14,7 +16,7 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 
 JINJA_ENV = Environment(
     loader=PackageLoader('adafruit_podcast', 'templates'),
-    autoescape=select_autoescape(['html', 'xml', 'js'])
+    autoescape=select_autoescape(['html', 'xml'])
 )
 
 # YouTube download commands:
@@ -132,8 +134,7 @@ class AdafruitPlaylist:
             # To make sure we don't already have this id, add to id list:
             if not vid_data['id'] in self.video_ids:
                 self.video_ids.append(vid_data['id'])
-
-            self.videos.append(vid_data)
+                self.videos.append(vid_data)
 
     def write_rss(self):
         """Write podcast feeds to files."""
@@ -206,11 +207,52 @@ class AdafruitPlaylist:
     def write_appletv(self):
         """Write appletv.js files."""
 
+        pp.pprint(self.videos)
+        pp.pprint(self.video_ids)
+
+        em = lxml.builder.ElementMaker()
+
+        episodesLockup = lxml.etree.Element('episodesLockup')
+        for vid in self.videos:
+            episodesLockup.append(em.title(vid['fulltitle']))
+            episodesLockup.append(
+                em.relatedContent(
+                    em.lockup(
+                        em.img(),
+                        em.title(vid['fulltitle']),
+                        em.description(vid['description'])
+                    )
+                )
+            )
+
+        tvml = em.document(
+            em.listTemplate(
+                em.banner(
+                    em.background(
+                        em.img(
+                            src='https://s3.amazonaws.com/adafruit-apple-tv/images/FeaturedBannerMain.jpg',
+                            width='1920',
+                            height='360'
+                        )
+                    )
+                ),
+                em.list(
+                    em.header(em.title(self.info['title'])),
+                    em.section(
+                        em.header(em.title('Episodes')),
+                        episodesLockup
+                    ),
+                )
+            ),
+        )
+        # markup = lxml.etree.tostring(tvml, pretty_print=True)
+        markup = lxml.etree.tostring(tvml, encoding='unicode')
+
         # Ensure output folder for this podcast exists:
         os.makedirs(os.path.join(self.controller.output_dir, self.folder), exist_ok=True)
 
         js_template = JINJA_ENV.get_template('appletv.js')
 
-        js_template.stream(self.info).dump(
+        js_template.stream({'markup': markup}).dump(
             os.path.join(self.controller.output_dir, self.folder, 'appletv.js')
         )
