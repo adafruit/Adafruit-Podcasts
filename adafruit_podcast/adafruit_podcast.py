@@ -201,6 +201,13 @@ class AdafruitPlaylist:
             '/' + \
             os.path.basename(video_filename)
 
+    def video_image_url(self, video_filename):
+        """Get a thumbnail path for the given filename."""
+        return self.controller.base_url + \
+            self.output_template_basedir + \
+            '/' + \
+            re.sub('mp4$', 'jpg', os.path.basename(video_filename))
+
     def write_rss(self):
         """Write podcast feeds to files."""
 
@@ -253,6 +260,7 @@ class AdafruitPlaylist:
                 entry.category(term=category)
             entry.description(vid['description'])
             entry.enclosure(vid_url, str(vid_size), 'video/mp4')
+            entry.podcast.itunes_image(self.controller.base_url + self.folder + '/image.jpg')
 
             entry.podcast.itunes_author(self.info['author'])
             entry.podcast.itunes_summary(vid['description'])
@@ -280,12 +288,15 @@ class AdafruitPlaylist:
 
         for vid in self.videos:
             vid_url = self.video_url(vid['_filename'])
+            vid_image_url = self.video_image_url(vid['_filename'])
             episodesSection.append(
                 em.listItemLockup(
                     em.title(vid['fulltitle']),
                     em.relatedContent(
                         em.lockup(
-                            em.img(),
+                            em.img(
+                                src=vid_image_url
+                            ),
                             em.title(vid['fulltitle']),
                             em.description(vid['description'])
                         )
