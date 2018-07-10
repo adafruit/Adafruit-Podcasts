@@ -5,12 +5,12 @@ them, and generate feeds.
 
 import glob
 import json
-import lxml.builder
-import lxml.etree
 import os
 import pprint
 import re
 import subprocess
+import lxml.builder
+import lxml.etree
 from feedgen.feed import FeedGenerator
 from jinja2 import Environment, PackageLoader, select_autoescape
 
@@ -77,6 +77,60 @@ class AdafruitPodcast:
             print(playlist.info['title'])
             playlist.fetch(APPLETV_COMMAND)
             playlist.write_appletv()
+        self.write_toplevel_appletv()
+
+    def write_toplevel_appletv(self):
+        """Write a top-level appletv.js template for Apple TV."""
+        em = lxml.builder.ElementMaker()
+
+        # Build list of playlists:
+        playlist_section = lxml.etree.Element('section')
+        playlist_section.append(em.header(em.title('Episodes')))
+
+        for playlist in self.playlists:
+            playlist_url = self.base_url + playlist.folder + '/appletv.js'
+            playlist_section.append(
+                em.lockup(
+                    em.relatedContent(
+                        em.lockup(
+                            em.img(),
+                            em.title(playlist.info['title']),
+                        )
+                    ),
+                    {'is': 'true', 'template': playlist_url}
+                )
+            )
+
+        # Build overall TVML document:
+        tvml = em.document(
+            em.stackTemplate(
+                em.identityBanner(
+                    em.background(
+                        em.img(
+                            src='https://s3.amazonaws.com/adafruit-apple-tv/images/FeaturedBannerMain.jpg',
+                            width='1920',
+                            height='360'
+                        )
+                    )
+                ),
+                em.collectionList(
+                    em.grid(
+                        playlist_section
+                    )
+                ),
+                {'class': 'lightBackgroundColor'}
+            ),
+        )
+        # markup = lxml.etree.tostring(tvml, pretty_print=True)
+        markup = lxml.etree.tostring(tvml, encoding='unicode')
+        js_template = JINJA_ENV.get_template('appletv.js')
+
+        js_template.stream({'markup': markup}).dump(
+            os.path.join(self.output_dir, 'appletv.js')
+        )
+
+    def toplevel_rss(self):
+        print("toplevel_rss isn't implemented yet.")
 
 class AdafruitPlaylist:
     """AdafruitPlayist - model an individual playlist."""
