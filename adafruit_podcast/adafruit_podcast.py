@@ -85,15 +85,19 @@ class AdafruitPodcast:
 
         # Build list of playlists:
         playlist_section = lxml.etree.Element('section')
-        playlist_section.append(em.header(em.title('Episodes')))
 
         for playlist in self.playlists:
             playlist_url = self.base_url + playlist.folder + '/appletv.js'
+            image_url = self.base_url + playlist.folder + '/appletv.jpg'
             playlist_section.append(
                 em.lockup(
                     em.relatedContent(
                         em.lockup(
-                            em.img(),
+                            em.img(
+                                src=image_url,
+                                width="350",
+                                height="350"
+                            ),
                             em.title(playlist.info['title']),
                         )
                     ),
