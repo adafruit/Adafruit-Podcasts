@@ -292,7 +292,9 @@ class AdafruitPlaylist:
                     em.relatedContent(
                         em.lockup(
                             em.img(
-                                src=vid_image_url
+                                src=vid_image_url,
+                                width="857",
+                                height="482"
                             ),
                             em.title(vid['fulltitle']),
                             em.description(vid['description'])
