@@ -221,8 +221,13 @@ class AdafruitPlaylist:
         feedgen.webMaster(self.info['webMaster'])
         feedgen.managingEditor(self.info['managingEditor'])
         feedgen.link(href=feed_url, rel='self')
+
         # Link to the original YouTube playlist as an alternate:
-        feedgen.link(href=self.url, rel='alternate')
+        if isinstance(self.url, list):
+            for url in self.url:
+                feedgen.link(href=url, rel='alternate')
+        else:
+            feedgen.link(href=self.url, rel='alternate')
         feedgen.language('en')
 
         # feedgen.logo('http://ex.com/logo.jpg')
