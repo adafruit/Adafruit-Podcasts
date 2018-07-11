@@ -156,7 +156,7 @@ class AdafruitPlaylist:
         source = self.url
         # If we have a list of source URLs, turn them into a string:
         if isinstance(source, list):
-            source = source.join(' ')
+            source = ' '.join(source)
 
         result = subprocess.run(
             command + ["--output", self.output_template(), source],
