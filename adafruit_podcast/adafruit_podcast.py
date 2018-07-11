@@ -12,12 +12,6 @@ import subprocess
 import lxml.builder
 import lxml.etree
 from feedgen.feed import FeedGenerator
-from jinja2 import Environment, PackageLoader, select_autoescape
-
-JINJA_ENV = Environment(
-    loader=PackageLoader('adafruit_podcast', 'templates'),
-    autoescape=select_autoescape(['html', 'xml'])
-)
 
 # YouTube download commands:
 # Note: -s is for simulate, remove to get anything real done, add to avoid downloading videos
@@ -127,11 +121,9 @@ class AdafruitPodcast:
         )
         # markup = lxml.etree.tostring(tvml, pretty_print=True)
         markup = lxml.etree.tostring(tvml, encoding='unicode')
-        js_template = JINJA_ENV.get_template('appletv.js')
-
-        js_template.stream({'markup': markup}).dump(
-            os.path.join(self.output_dir, 'appletv.js')
-        )
+        markup = 'var Template = function() { return `<?xml version="1.0" encoding="UTF-8" ?>' + markup + '`;};'
+        with open(os.path.join(self.output_dir, 'appletv.js'), 'w') as f:
+            f.write(markup)
 
     def toplevel_rss(self):
         print("toplevel_rss isn't implemented yet.")
@@ -325,12 +317,10 @@ class AdafruitPlaylist:
         )
         # markup = lxml.etree.tostring(tvml, pretty_print=True)
         markup = lxml.etree.tostring(tvml, encoding='unicode')
+        markup = 'var Template = function() { return `<?xml version="1.0" encoding="UTF-8" ?>' + markup + '`;};'
 
         # Ensure output folder for this podcast exists:
         os.makedirs(os.path.join(self.controller.output_dir, self.folder), exist_ok=True)
 
-        js_template = JINJA_ENV.get_template('appletv.js')
-
-        js_template.stream({'markup': markup}).dump(
-            os.path.join(self.controller.output_dir, self.folder, 'appletv.js')
-        )
+        with open(os.path.join(self.controller.output_dir, self.folder, 'appletv.js'), 'w') as f:
+            f.write(markup)
