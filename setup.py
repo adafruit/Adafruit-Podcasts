@@ -12,7 +12,7 @@ setup(name='adafruit_podcast',
           'dominate',
           'docopt',
           'feedgen',
-          'Jinja2'
+          'youtube-dl'
       ],
       scripts=['bin/podcast'],
       zip_safe=False)
