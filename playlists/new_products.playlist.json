@@ -1,0 +1,11 @@
+{
+  "folder": "new_products",
+  "url": "https://www.youtube.com/playlist?list=PL028933C9CA644CFB",
+  "track": "http://www.adafruit.com/?utm_source=podcast&utm_medium=videodescrip&utm_campaign=newproducts",
+
+  "_info": {
+    "title": "New Products",
+    "description": "Each week Ladyada shows the newest great electronics at Adafruit!",
+    "itunesSubtitle": "Each week Ladyada shows the newest great electronics at Adafruit!"
+  }
+}

@@ -16,12 +16,12 @@ from feedgen.feed import FeedGenerator
 # YouTube download commands:
 # Note: -s is for simulate, remove to get anything real done, add to avoid downloading videos
 PODCAST_COMMAND = ['youtube-dl', '--ignore-errors', '--print-json',
-                   '--write-thumbnail', '--no-overwrites', '--max-downloads', '1',
+                   '--write-thumbnail', '--no-overwrites', '--max-downloads', '10',
                    '--merge-output-format', 'mp4', '--restrict-filenames',
                    '--sleep-interval', '10', '--format', '134+140']
 
 APPLETV_COMMAND = ['youtube-dl', '--ignore-errors', '--print-json',
-                   '--write-thumbnail', '--no-overwrites', '--max-downloads', '1',
+                   '--write-thumbnail', '--no-overwrites', '--max-downloads', '20',
                    '--merge-output-format', 'mp4', '--restrict-filenames',
                    '--sleep-interval', '10', '--format', '137+140,136+140']
 
