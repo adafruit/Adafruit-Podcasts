@@ -2,7 +2,7 @@
   "folder": "ask_an_engineer",
   "url": "https://www.youtube.com/playlist?list=PL7AE4BFB81D3DC925",
   "track": "http://www.adafruit.com/?utm_source=podcast&utm_medium=videodescrip&utm_campaign=aae",
-
+  "max_downloads": 50,
   "_info": {
     "title": "Ask an Engineer",
     "description": "Every Wednesday night at 8pm ET join us for our weekly live video & chatroom! Visit http://adafruit.com/ask for more info. You can ask anything about electronics, kits at Adafruit or just stop in to meet other makers who are building cool things! At the end of the chat we give away a kit from Adafruit to the winner of our trivia question!",

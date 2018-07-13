@@ -5,6 +5,7 @@
     "https://www.youtube.com/playlist?list=PLjF7R1fz_OOVsMp6nKnpjsXSQ45nxfORb"
   ],
   "track": "http://www.adafruit.com/?utm_source=podcast&utm_medium=videodescrip&utm_campaign=3dprinting",
+  "max_downloads": 50,
   "_info": {
     "title": "3D Printing Projects",
     "description": "Every Thursday is #3DThursday at Adafruit! Tune in for a new project using 3D printing and DIY electronics. Get inspired to use 3D printing in your projects and find out how to design things using CAD software. Learn to print enclosures, cosplay elements, camera mods, and much much more from Noe Ruiz and Pedro Ruiz.",

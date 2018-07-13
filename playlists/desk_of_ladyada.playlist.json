@@ -2,7 +2,7 @@
   "folder": "desk_of_ladyada",
   "url": "https://www.youtube.com/playlist?list=PLjF7R1fz_OOXUtaFu7-_D1UCugC8OecKv'",
   "track": "http://www.adafruit.com/?utm_source=podcast&utm_medium=videodescrip&utm_campaign=deskofladyada",
-
+  "max_downloads": 50,
   "_info": {
     "title": "Live from the Desk of Ladyada",
     "description": "Join Ladyada streaming live for circuit board layout design, code writing, surface mount soldering and more fresh engineering and even some gaming! If Ladyada’s working on it, you’ll find it here first.",

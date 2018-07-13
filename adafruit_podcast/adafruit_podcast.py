@@ -16,12 +16,12 @@ from feedgen.feed import FeedGenerator
 # YouTube download commands:
 # Note: -s is for simulate, remove to get anything real done, add to avoid downloading videos
 PODCAST_COMMAND = ['youtube-dl', '--ignore-errors', '--print-json',
-                   '--write-thumbnail', '--no-overwrites', '--max-downloads', '10',
+                   '--write-thumbnail', '--no-overwrites',
                    '--merge-output-format', 'mp4', '--restrict-filenames',
                    '--sleep-interval', '10', '--format', '134+140']
 
 APPLETV_COMMAND = ['youtube-dl', '--ignore-errors', '--print-json',
-                   '--write-thumbnail', '--no-overwrites', '--max-downloads', '20',
+                   '--write-thumbnail', '--no-overwrites',
                    '--merge-output-format', 'mp4', '--restrict-filenames',
                    '--sleep-interval', '10', '--format', '137+140,136+140']
 
@@ -58,19 +58,25 @@ class AdafruitPodcast:
 
             self.playlists.append(AdafruitPlaylist(self, playlist_desc))
 
+        # Order playlists by title string:
+        self.playlists = sorted(self.playlists, key=lambda playlist: playlist.info['title'])
+
     def run_all_rss(self):
         """Fetch playlists, write podcast data."""
         for playlist in self.playlists:
             print(playlist.info['title'])
-            playlist.fetch(PODCAST_COMMAND)
+            playlist.fetch(PODCAST_COMMAND, 1)
             playlist.write_rss()
 
     def run_all_appletv(self):
         """Fetch playlists, write podcast data."""
         for playlist in self.playlists:
-            print(playlist.info['title'])
-            playlist.fetch(APPLETV_COMMAND)
-            playlist.write_appletv()
+            if playlist.include_in_appletv:
+                print('writing ' + playlist.info['title'] + ' appletv')
+                playlist.fetch(APPLETV_COMMAND, 2)
+                playlist.write_appletv()
+            else:
+                print(playlist.info['title'] + ' excluded from appletv')
         self.write_toplevel_appletv()
 
     def write_toplevel_appletv(self):
@@ -81,6 +87,9 @@ class AdafruitPodcast:
         playlist_section = lxml.etree.Element('section')
 
         for playlist in self.playlists:
+            if not playlist.include_in_appletv:
+                continue
+
             playlist_url = self.base_url + playlist.folder + '/appletv.js'
             image_url = self.base_url + playlist.folder + '/appletv.jpg'
             playlist_section.append(
@@ -126,13 +135,16 @@ class AdafruitPodcast:
             f.write(markup)
 
     def toplevel_rss(self):
+        """Print a top-level RSS feed pointing at other feeds for monitoring purposes."""
         print("toplevel_rss isn't implemented yet.")
 
+# pylint: disable=too-many-instance-attributes
 class AdafruitPlaylist:
     """AdafruitPlayist - model an individual playlist."""
 
     output_template_basedir = 'media'
     output_template_name = '%(id)s_%(height)s.%(ext)s'
+
 
     def __init__(self, controller, description):
         self.controller = controller
@@ -140,6 +152,15 @@ class AdafruitPlaylist:
         self.url = description['url']
         self.track = description['track']
         self.folder = description['folder']
+
+        self.max_downloads = 0
+        if 'max_downloads' in description:
+            self.max_downloads = description['max_downloads']
+
+        self.include_in_appletv = True
+        if 'include_in_appletv' in description:
+            self.include_in_appletv = description['include_in_appletv']
+
         self.video_ids = []
         self.videos = []
 
@@ -151,15 +172,19 @@ class AdafruitPlaylist:
             self.output_template_name
         )
 
-    def fetch(self, command):
+    def fetch(self, command, fetch_multiplier):
         """Fetch the playlist's videos and metadata."""
         source = self.url
         # If we have a list of source URLs, turn them into a string:
         if isinstance(source, list):
             source = ' '.join(source)
 
+        if self.max_downloads > 0:
+            max_dl = str(fetch_multiplier * self.max_downloads)
+            command = command + ['--max-downloads', max_dl]
+
         result = subprocess.run(
-            command + ["--output", self.output_template(), source],
+            command + ['--output', self.output_template(), source],
             stdout=subprocess.PIPE,
             universal_newlines=True
         )

@@ -2,6 +2,7 @@
   "folder": "3d_hangouts",
   "url": "https://www.youtube.com/playlist?list=PLjF7R1fz_OOVgpmWevin2slopw_A3-A8Y",
   "track": "http://www.adafruit.com/?utm_source=podcast&utm_medium=videodescrip&utm_campaign=3dprinting",
+  "max_downloads": 50,
   "_info": {
     "title": "3D Hangouts",
     "description": "Hang out with Noe & Pedro Ruiz every week and discover 3D printing! Get your 3D news, projects, design tutorials, shop talk and more each week. We'll also share what's on our build platforms at the moment, sneak peeks of future projects, and throughout all of it, we’ll keep on printing. Subscribe to the Adafruit channel on YouTube and follow us on Google+ to catch future broadcasts.",

@@ -1,0 +1,11 @@
+{
+  "folder": "john_parks_workshop",
+  "url": "https://www.youtube.com/playlist?list=PLjF7R1fz_OOVvPjQU_KXsLPVB0pG_kdxW",
+  "track": "http://www.adafruit.com/?utm_source=podcast&utm_medium=videodescrip&utm_campaign=aae",
+  "max_downloads": 50,
+  "_info": {
+    "title": "John Park's Workshop",
+    "description": "Project builds, hacks, and mods from John Park's Workshop!",
+    "itunesSubtitle": "Project builds, hacks, and mods from John Park's Workshop!"
+  }
+}

@@ -2,7 +2,7 @@
   "folder": "raspberry_pi",
   "url": "https://www.youtube.com/playlist?list=PL1A011279DBD4EB7E",
   "track": "http://www.adafruit.com/?utm_source=podcast&utm_medium=videodescrip&utm_campaign=raspi",
-
+  "max_downloads": 50,
   "_info": {
    "title": "Raspberry Pi",
    "description": "Adafruit\"s goal to help the world learn & share electronics and computer programming continues with our line of products made just for the Raspberry Pi®. What is the Raspberry Pi® ? A low-cost ARM GNU/Linux box.",
