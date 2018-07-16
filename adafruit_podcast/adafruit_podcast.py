@@ -94,15 +94,13 @@ class AdafruitPodcast:
             image_url = self.base_url + playlist.folder + '/appletv.jpg'
             playlist_section.append(
                 em.lockup(
-                    em.relatedContent(
-                        em.lockup(
-                            em.img(
-                                src=image_url,
-                                width="350",
-                                height="350"
-                            ),
-                            em.title(playlist.info['title']),
-                        )
+                    em.img(
+                        src=image_url,
+                        width="350",
+                        height="350"
+                    ),
+                    em.title(
+                        re.sub("'", '&#x27;s', playlist.info['title'])
                     ),
                     {'is': 'true', 'template': playlist_url}
                 )
