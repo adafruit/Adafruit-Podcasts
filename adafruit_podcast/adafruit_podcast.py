@@ -44,7 +44,7 @@ class AdafruitPodcast:
         with open(os.path.join(self.playlist_dir, '_info.json')) as info_file:
             self.base_info = json.load(info_file)
 
-        print("podcast self.base_info\n")
+        print("podcast self.base_info\n", flush=True)
         pp.pprint(self.base_info)
 
         # Get individual playlist info from *.playlist.json files in the playlist dir:
@@ -64,7 +64,7 @@ class AdafruitPodcast:
     def run_all_rss(self):
         """Fetch playlists, write podcast data."""
         for playlist in self.playlists:
-            print(playlist.info['title'])
+            print(playlist.info['title'], flush=True)
             playlist.fetch(PODCAST_COMMAND, 1)
             playlist.write_rss()
 
@@ -72,11 +72,11 @@ class AdafruitPodcast:
         """Fetch playlists, write podcast data."""
         for playlist in self.playlists:
             if playlist.include_in_appletv:
-                print('writing ' + playlist.info['title'] + ' appletv')
+                print('writing ' + playlist.info['title'] + ' appletv', flush=True)
                 playlist.fetch(APPLETV_COMMAND, 2)
                 playlist.write_appletv()
             else:
-                print(playlist.info['title'] + ' excluded from appletv')
+                print(playlist.info['title'] + ' excluded from appletv', flush=True)
         self.write_toplevel_appletv()
 
     def write_toplevel_appletv(self):
@@ -100,7 +100,8 @@ class AdafruitPodcast:
                         height="350"
                     ),
                     em.title(
-                        re.sub("'", '&#x27;s', playlist.info['title'])
+                        # re.sub("'", '&#x27;s', playlist.info['title'])
+                        playlist.info['title']
                     ),
                     {'is': 'true', 'template': playlist_url}
                 )
@@ -134,7 +135,7 @@ class AdafruitPodcast:
 
     def toplevel_rss(self):
         """Print a top-level RSS feed pointing at other feeds for monitoring purposes."""
-        print("toplevel_rss isn't implemented yet.")
+        print("toplevel_rss isn't implemented yet.", flush=True)
 
 # pylint: disable=too-many-instance-attributes
 class AdafruitPlaylist:
@@ -226,7 +227,7 @@ class AdafruitPlaylist:
     def write_rss(self):
         """Write podcast feeds to files."""
 
-        print("playlist self.info")
+        print("playlist self.info", flush=True)
         pp.pprint(self.info)
 
         feed_url = self.controller.base_url + self.folder + '/podcast.xml'
@@ -270,7 +271,7 @@ class AdafruitPlaylist:
             # Size of enclosed file in bytes:
             vid_size = os.path.getsize(vid['_filename'])
 
-            print("vid:\n")
+            print("vid:\n", flush=True)
             pp.pprint(vid)
 
             entry = feedgen.add_entry()

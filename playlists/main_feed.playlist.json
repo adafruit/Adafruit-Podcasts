@@ -3,6 +3,7 @@
   "url": "https://www.youtube.com/channel/UCpOlOeQjj7EsVnDh3zuCgsA",
   "track": "http://www.adafruit.com/?utm_source=podcast&utm_medium=videodescrip&utm_campaign=allvideos",
   "include_in_appletv": false,
+  "max_downloads": 50,
 
   "_info": {
     "title": "Adafruit Industries",

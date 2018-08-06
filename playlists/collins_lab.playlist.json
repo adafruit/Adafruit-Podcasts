@@ -2,6 +2,7 @@
   "folder": "collins_lab",
   "url": "https://www.youtube.com/playlist?list=PLjF7R1fz_OOU08_hRcayfVZSmTpBCGJbL",
   "track": "http://www.adafruit.com/?utm_source=podcast&utm_medium=videodescrip&utm_campaign=collinslab",
+  "max_downloads": 50,
 
   "_info": {
     "title": "Collin's Lab",

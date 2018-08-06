@@ -2,6 +2,7 @@
   "folder":"circuit_playground",
   "url": "https://www.youtube.com/playlist?list=PLjF7R1fz_OOXWHQhEVEI5Jqf18TQRr5Hu",
   "track": "http://www.adafruit.com/?utm_source=podcast&utm_medium=videodescrip&utm_campaign=circuitplayground",
+  "max_downloads": 50,
 
   "_info": {
     "title": "Circuit Playground",
