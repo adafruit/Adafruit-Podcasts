@@ -110,7 +110,7 @@ class AdafruitPodcast:
         # Build overall TVML document:
         tvml = em.document(
             em.stackTemplate(
-                em.identityBanner(
+                em.banner(
                     em.background(
                         em.img(
                             src='https://s3.amazonaws.com/adafruit-apple-tv/images/FeaturedBannerMain.jpg',
@@ -334,7 +334,7 @@ class AdafruitPlaylist:
                 em.banner(
                     em.background(
                         em.img(
-                            src='https://s3.amazonaws.com/adafruit-apple-tv/images/FeaturedBannerMain.jpg',
+                            src='https://s3.amazonaws.com/adafruit-apple-tv/images/EpisodeBanner.jpg',
                             width='1920',
                             height='360'
                         )
