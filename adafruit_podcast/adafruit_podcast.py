@@ -182,8 +182,11 @@ class AdafruitPlaylist:
             max_dl = str(fetch_multiplier * self.max_downloads)
             command = command + ['--max-downloads', max_dl]
 
+        fetch_command = command + ['--output', self.output_template(), source]
+        pp.pprint(fetch_command)
+
         result = subprocess.run(
-            command + ['--output', self.output_template(), source],
+            fetch_command,
             stdout=subprocess.PIPE,
             universal_newlines=True
         )
