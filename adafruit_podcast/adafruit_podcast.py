@@ -49,7 +49,7 @@ class AdafruitPodcast:
 
         # Get individual playlist info from *.playlist.json files in the playlist dir:
         for playlist in glob.glob(os.path.join(self.playlist_dir, '*.playlist.json')):
-            playlist_desc = json.load(open(playlist))
+            playlist_desc = json.load(open(playlist, encoding="utf-8"))
 
             # Merge base info into playlist info:
             for key in self.base_info:
