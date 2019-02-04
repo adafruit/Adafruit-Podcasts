@@ -1,4 +1,5 @@
 {
+  "include_in_appletv": false,
   "include_audio_version": true,
   "folder": "circuitpython_weekly_meeting",
   "url": "https://www.youtube.com/playlist?list=PLjF7R1fz_OOUvw7tMv45xjWp0ht8yNgg0",
