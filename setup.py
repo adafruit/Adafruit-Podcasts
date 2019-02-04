@@ -12,6 +12,7 @@ setup(name='adafruit_podcast',
           'dominate',
           'docopt',
           'feedgen',
+          'pytz',
           'youtube-dl'
       ],
       scripts=['bin/podcast'],

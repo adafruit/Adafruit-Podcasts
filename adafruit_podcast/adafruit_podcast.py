@@ -7,8 +7,10 @@ import glob
 import json
 import os
 import pprint
+import pytz
 import re
 import subprocess
+import datetime
 import lxml.builder
 import lxml.etree
 from feedgen.feed import FeedGenerator
@@ -24,6 +26,13 @@ APPLETV_COMMAND = ['youtube-dl', '--ignore-errors', '--print-json',
                    '--write-thumbnail', '--no-overwrites',
                    '--merge-output-format', 'mp4', '--restrict-filenames',
                    '--sleep-interval', '10', '--format', '137+140,136+140']
+
+AUDIOPODCAST_COMMAND = ['youtube-dl', '--ignore-errors', '--print-json',
+                        '--write-thumbnail', '--no-overwrites', '--keep-video',
+			'--merge-output-format', 'mp4',
+			'--no-post-overwrites', '--extract-audio',
+			 '--audio-format', 'mp3', '--restrict-filenames',
+                        '--sleep-interval', '10', '--format', '140']
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -64,9 +73,16 @@ class AdafruitPodcast:
     def run_all_rss(self):
         """Fetch playlists, write podcast data."""
         for playlist in self.playlists:
-            print(playlist.info['title'], flush=True)
-            playlist.fetch(PODCAST_COMMAND, 1)
-            playlist.write_rss()
+            if playlist.include_audio_version:
+                print('(AUDIO EDITION) ' + playlist.info['title'], flush=True)
+                playlist.fetch(AUDIOPODCAST_COMMAND, 1)
+                playlist.write_rss(audio=True)
+
+        for playlist in self.playlists:
+            if not playlist.include_audio_version:
+                print(playlist.info['title'], flush=True)
+                playlist.fetch(PODCAST_COMMAND, 1)
+                playlist.write_rss()
 
     def run_all_appletv(self):
         """Fetch playlists, write podcast data."""
@@ -160,6 +176,10 @@ class AdafruitPlaylist:
         if 'include_in_appletv' in description:
             self.include_in_appletv = description['include_in_appletv']
 
+        self.include_audio_version = False
+        if 'include_audio_version' in description:
+            self.include_audio_version = description['include_audio_version']
+
         self.video_ids = []
         self.videos = []
 
@@ -225,15 +245,17 @@ class AdafruitPlaylist:
         return self.controller.base_url + \
             self.output_template_basedir + \
             '/' + \
-            re.sub('mp4$', 'jpg', os.path.basename(video_filename))
+            re.sub('mp[34]$', 'jpg', os.path.basename(video_filename))
 
-    def write_rss(self):
+    def write_rss(self, audio=False):
         """Write podcast feeds to files."""
 
         print("playlist self.info", flush=True)
         pp.pprint(self.info)
 
-        feed_url = self.controller.base_url + self.folder + '/podcast.xml'
+        prefix = "audio-" if audio else ""
+
+        feed_url = self.controller.base_url + self.folder + '/' + prefix + 'podcast.xml'
 
         feedgen = FeedGenerator()
         feedgen.load_extension('podcast')
@@ -267,23 +289,32 @@ class AdafruitPlaylist:
             email=self.info['itunesOwner']['email'],
             name=self.info['itunesOwner']['name']
         )
+        feedgen.podcast.itunes_author(self.info['itunesOwner']['name'])
+        feedgen.podcast.itunes_image(self.controller.base_url + self.folder + '/image.jpg')
 
         for vid in self.videos:
-            vid_url = self.video_url(vid['_filename'])
-
-            # Size of enclosed file in bytes:
-            vid_size = os.path.getsize(vid['_filename'])
-
             print("vid:\n", flush=True)
             pp.pprint(vid)
+            print("\n", flush=True)
+
+            vid_filename = vid['_filename'].split('.')[0] + (".mp3" if audio else ".mp4")
+
+            vid_url = self.video_url(vid_filename)
+
+            # Size of enclosed file in bytes:
+            vid_size = os.path.getsize(vid_filename)
+
+            # Date of upload (youtube-dl sets the file mtime to match video publish date)
+            vid_date = datetime.datetime.fromtimestamp(os.path.getmtime(vid_filename), pytz.timezone('US/Eastern'))
 
             entry = feedgen.add_entry()
             entry.id(vid_url)
             entry.title(vid['fulltitle'])
+            entry.published(vid_date)
             for category in vid['categories']:
                 entry.category(term=category)
             entry.description(vid['description'])
-            entry.enclosure(vid_url, str(vid_size), 'video/mp4')
+            entry.enclosure(vid_url, str(vid_size), ('audio/mp3' if audio else 'video/mp4'))
             entry.podcast.itunes_image(self.controller.base_url + self.folder + '/image.jpg')
 
             entry.podcast.itunes_author(self.info['author'])
@@ -296,7 +327,7 @@ class AdafruitPlaylist:
         os.makedirs(os.path.join(self.controller.output_dir, self.folder), exist_ok=True)
 
         # Generate RSS file in output folder:
-        feedgen.rss_file(os.path.join(self.controller.output_dir, self.folder, 'podcast.xml'))
+        feedgen.rss_file(os.path.join(self.controller.output_dir, self.folder, prefix + 'podcast.xml'))
 
     def write_appletv(self):
         """Write appletv.js files."""
