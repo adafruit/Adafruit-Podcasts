@@ -29,9 +29,9 @@ APPLETV_COMMAND = ['youtube-dl', '--ignore-errors', '--print-json',
 
 AUDIOPODCAST_COMMAND = ['youtube-dl', '--ignore-errors', '--print-json',
                         '--write-thumbnail', '--no-overwrites', '--keep-video',
-			'--merge-output-format', 'mp4',
-			'--no-post-overwrites', '--extract-audio',
-			 '--audio-format', 'mp3', '--restrict-filenames',
+                        '--merge-output-format', 'mp4',
+                        '--no-post-overwrites', '--extract-audio',
+                        '--audio-format', 'mp3', '--restrict-filenames',
                         '--sleep-interval', '10', '--format', '140']
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -304,8 +304,8 @@ class AdafruitPlaylist:
             # Size of enclosed file in bytes:
             vid_size = os.path.getsize(vid_filename)
 
-            # Date of upload (youtube-dl sets the file mtime to match video publish date)
-            vid_date = datetime.datetime.fromtimestamp(os.path.getmtime(vid_filename), pytz.timezone('US/Eastern'))
+            # Date of upload (from the youtube-dl JSON data)
+            vid_date = datetime.datetime.strptime(vid['upload_date'], '%Y%m%d').replace(tzinfo=pytz.timezone('US/Eastern'))
 
             entry = feedgen.add_entry()
             entry.id(vid_url)
