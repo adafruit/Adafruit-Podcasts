@@ -1,0 +1,12 @@
+{
+  "folder": "python_on_hardware",
+  "url": "https://www.youtube.com/playlist?list=PLjF7R1fz_OOXRMjM7Sm0J2Xt6H81TdDev",
+  "track": "http://www.adafruit.com/?utm_source=podcast&utm_medium=videodescrip&utm_campaign=pythononhardware",
+  "max_downloads": 50,
+  "_info": {
+    "htmlUrl": "https://www.adafruit.com/circuitpython",
+    "title": "Python on Hardware",
+    "description": "The wonderful world of Python on hardware! This is our video-newsletter-podcast of all things Python and electronics! The news comes from the Python community, discord, Adafruit communities and more. It's part of the weekly newsletter, then we have a segment on ASK an ENGINEER and this is the video slice from that! Sign up for the newsletter here: https://www.adafruitdaily.com/",
+    "itunesSubtitle": "The wonderful world of Python on hardware! A weekly video-newsletter-podcast of all things Python and electronics!"
+  }
+}

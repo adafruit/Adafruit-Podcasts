@@ -6,6 +6,7 @@
   "track": "http://www.adafruit.com/?utm_source=podcast&utm_medium=videodescrip&utm_campaign=circuitpythonweeklymtg",
   "max_downloads": 50,
   "_info": {
+    "htmlUrl": "https://www.adafruit.com/circuitpython",
     "title": "CircuitPython Weekly Meeting",
     "description": "Join here for the chat all week: http://adafru.it/discord The weekly happens normally at 2pm ET/11am PT on Mondays. Check the #circuitpython channel for notices of change in time and links to past episodes.",
     "itunesSubtitle": "Join here for the chat all week: http://adafru.it/discord The weekly happens normally at 2pm ET/11am PT on Mondays. Check the #circuitpython channel for notices of change in time and links to past episodes."
