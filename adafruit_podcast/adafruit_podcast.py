@@ -1,3 +1,4 @@
+# vim: set et sw=4 ts=4 ai
 """
 AdafruitPodcast - build a collection of playlists from metadata, retrieve
 them, and generate feeds.
@@ -271,12 +272,17 @@ class AdafruitPlaylist:
         feedgen.managingEditor(self.info['managingEditor'])
         feedgen.link(href=feed_url, rel='self')
 
-        # Link to the original YouTube playlist as an alternate:
-        if isinstance(self.url, list):
-            for url in self.url:
-                feedgen.link(href=url, rel='alternate')
+        # Link to a chosen URL as an alternate, if set.
+        if 'htmlUrl' in self.info:
+            feedgen.link(href=self.info['htmlUrl'], rel='alternate')
         else:
-            feedgen.link(href=self.url, rel='alternate')
+            # Otherwise link to the original YouTube playlist as an alternate:
+            if isinstance(self.url, list):
+                for url in self.url:
+                    feedgen.link(href=url, rel='alternate')
+            else:
+                feedgen.link(href=self.url, rel='alternate')
+
         feedgen.language('en')
 
         # feedgen.logo('http://ex.com/logo.jpg')
@@ -291,6 +297,7 @@ class AdafruitPlaylist:
         )
         feedgen.podcast.itunes_author(self.info['itunesOwner']['name'])
         feedgen.podcast.itunes_image(self.controller.base_url + self.folder + '/image.jpg')
+        feedgen.podcast.itunes_explicit('clean')
 
         for vid in self.videos:
             print("vid:\n", flush=True)
@@ -389,3 +396,4 @@ class AdafruitPlaylist:
 
         with open(os.path.join(self.controller.output_dir, self.folder, 'appletv.js'), 'w') as f:
             f.write(markup)
+
