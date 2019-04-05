@@ -6,3 +6,4 @@ _build
 build*
 bundles
 __pycache__
+*.log
