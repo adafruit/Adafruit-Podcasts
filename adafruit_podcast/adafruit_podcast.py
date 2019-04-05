@@ -214,6 +214,7 @@ class AdafruitPlaylist:
         vids = result.stdout.split("\n")
 
         for vid in vids:
+            vid_data = None
             if vid:
                 vid_data = json.loads(vid)
 
@@ -312,7 +313,8 @@ class AdafruitPlaylist:
             vid_size = os.path.getsize(vid_filename)
 
             # Date of upload (from the youtube-dl JSON data)
-            vid_date = datetime.datetime.strptime(vid['upload_date'], '%Y%m%d').replace(tzinfo=pytz.timezone('US/Eastern'))
+            eastern = pytz.timezone('US/Eastern')
+            vid_date = eastern.localize(datetime.datetime.strptime(vid['upload_date'], '%Y%m%d'))
 
             entry = feedgen.add_entry()
             entry.id(vid_url)
